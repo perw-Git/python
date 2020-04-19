@@ -11,35 +11,37 @@ Result is printed to resultingfile or standard out.
 default properties, where the values (only) may be substituted from env file above
 
 @var 2. environment properties file
-read environment specific keys (stripped) and values (not stripped)
+read environment specific envKeys (stripped) and values (not stripped)
 
 @var 3. resulting file (optional), otherwise print to stdout
 '''
 import sys
 
 if (len(sys.argv) < 3) or (len(sys.argv) > 4):
-    print("Usage: mergeProps.py <default.properties_file> <env.properties_file> [<resulting.properties_file>]", file=sys.stderr)
+    sys.stderr.write("Usage: mergeProps.py <template.properties_file> <environment.properties_file> [<resulting.properties_file>]")
     sys.exit(2)
 
 separator = "="
-keys = {}
 
 # read environment specific keys (stripped) and values (not stripped)
-envfile = sys.argv[2]
-try:
-    with open(envfile, 'r') as file:
-        for line in file:
-            line = line.rstrip('\r\n')
-            if (separator in line) and (line[0] != '#'):
+def readEnvironmentKeys(envfile):
+    keys = {}
+    try:
+        with open(envfile, 'r') as file:
+            for line in file:
+                line = line.rstrip('\r\n')
+                if (line[0] != '#') and (separator in line):
+                    # Find the name and value by splitting the string by first occurrence
+                    name, value = line.split(separator, 1)
+                    # Assign key value pair to dict
+                    keys[name.strip()] = value
+    except IOError:
+        sys.stderr.write("File not accessible: " + envfile)
+        sys.exit(2)
+    # print(envKeys)
+    return keys
 
-                # Find the name and value by splitting the string by first occurrence
-                name, value = line.split(separator, 1)
-                # Assign key value pair to dict
-                keys[name.strip()] = value
-except IOError:
-    print("File not accessible: " + envfile, file=sys.stderr)
-    sys.exit(2)
-# print(keys)
+envKeys = readEnvironmentKeys(sys.argv[2])
 
 # resulting file or stdout
 if len(sys.argv) == 4:
@@ -57,15 +59,15 @@ try:
                 # Find the name and value by splitting the string by first occurrence
                 name, value = line.split(separator, 1)
                 nameStrip = name.strip()
-                if nameStrip in keys.keys():
-                    resFile.write(name + '=' + keys[nameStrip] + '\n')
+                if nameStrip in envKeys.keys():
+                    resFile.write(name + '=' + envKeys[nameStrip] + '\n')
                 else:
                     resFile.write(line + '\n')
             else:
                 resFile.write(line + '\n')
 except IOError:
     resFile.close()
-    print("File not accessible: " + defaultfile, file=sys.stderr)
+    sys.stderr.write("File not accessible: " + defaultfile)
     sys.exit(2)
 
 resFile.close()
