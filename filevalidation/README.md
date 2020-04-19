@@ -1,0 +1,2 @@
+# filevalidation
+mvn validate
