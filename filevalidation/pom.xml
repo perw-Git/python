@@ -22,6 +22,7 @@
 							<executable>python</executable>
 							<arguments>
 								<argument>${basedir}/validatefiles.py</argument>
+								<argument>/Users/Matrix/perw/git/python/filevalidation/dir_existance_check</argument>
 								<argument>${basedir}/not_properties_file.txt</argument>
 								<argument>${basedir}/sam99ple.xml</argument>
 								<argument>${basedir}/no_duplicates.properties</argument>

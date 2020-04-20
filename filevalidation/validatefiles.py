@@ -3,8 +3,8 @@
 import sys
 import os
 
-if (len(sys.argv) < 2):
-    sys.stderr.write("Usage: validatefiles.py <xml_or_properties_files>")
+if (len(sys.argv) < 3):
+    sys.stderr.write("Usage: validatefiles.py  <dir_existance_check>  <xml_or_properties_files>")
     sys.exit(2)
     
 # read property keys (stripped) and make sure they are unique
@@ -36,6 +36,9 @@ def main():
         count += 1
         if (count == 1):
             continue
+        elif (count == 2) and (not os.path.isdir(filename)):
+            print("Directory '" + filename + "' does not exist, so no environment substitutions are performed.")
+            sys.exit(0)
 #         print (filename)
         if (not os.access(filename, os.R_OK)):
             sys.stderr.write("File not readable: " + filename + "\r\n")
