@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # encoding: utf-8
 '''
 @author: Per Wadmark
@@ -18,7 +18,7 @@ read environment specific envKeys (stripped) and values (not stripped)
 import sys
 
 if (len(sys.argv) < 3) or (len(sys.argv) > 4):
-    sys.stderr.write("Usage: mergeProps.py <template.properties_file> <environment.properties_file> [<resulting.properties_file>]")
+    sys.stderr.write("Usage: python3 mergeProps.py <template.properties_file> <environment.properties_file> [<resulting.properties_file>]")
     sys.exit(2)
 
 separator = "="
@@ -30,7 +30,7 @@ def readEnvironmentKeys(envfile):
         with open(envfile, 'r') as file:
             for line in file:
                 line = line.rstrip('\r\n')
-                if (line[0] != '#') and (separator in line):
+                if (separator in line) and (line[0] != '#'):
                     # Find the name and value by splitting the string by first occurrence
                     name, value = line.split(separator, 1)
                     # Assign key value pair to dict
@@ -41,33 +41,36 @@ def readEnvironmentKeys(envfile):
     # print(envKeys)
     return keys
 
-envKeys = readEnvironmentKeys(sys.argv[2])
-
-# resulting file or stdout
-if len(sys.argv) == 4:
-    resFile = open(sys.argv[3], 'w')
-else:
-    resFile = sys.stdout
-
-# default properties, where the values (only) may be substituted from env file above
-defaultfile = sys.argv[1]
-try:
-    with open(defaultfile, 'r') as file:
-        for line in file:
-            line = line.rstrip('\r\n')
-            if (separator in line) and (line[0] != '#'):
-                # Find the name and value by splitting the string by first occurrence
-                name, value = line.split(separator, 1)
-                nameStrip = name.strip()
-                if nameStrip in envKeys.keys():
-                    resFile.write(name + '=' + envKeys[nameStrip] + '\n')
+def main():
+    envKeys = readEnvironmentKeys(sys.argv[2])
+    
+    # resulting file or stdout
+    if len(sys.argv) == 4:
+        resFile = open(sys.argv[3], 'w')
+    else:
+        resFile = sys.stdout
+    
+    # default properties, where the values (only) may be substituted from env file above
+    defaultfile = sys.argv[1]
+    try:
+        with open(defaultfile, 'r') as file:
+            for line in file:
+                line = line.rstrip('\r\n')
+                if (separator in line) and (line[0] != '#'):
+                    # Find the name and value by splitting the string by first occurrence
+                    name, value = line.split(separator, 1)
+                    nameStrip = name.strip()
+                    if nameStrip in envKeys.keys():
+                        resFile.write(name + '=' + envKeys[nameStrip] + '\n')
+                    else:
+                        resFile.write(line + '\n')
                 else:
                     resFile.write(line + '\n')
-            else:
-                resFile.write(line + '\n')
-except IOError:
+    except IOError:
+        resFile.close()
+        sys.stderr.write("File not accessible: " + defaultfile)
+        sys.exit(2)
+    
     resFile.close()
-    sys.stderr.write("File not accessible: " + defaultfile)
-    sys.exit(2)
-
-resFile.close()
+    
+main()

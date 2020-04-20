@@ -10,7 +10,28 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
 				<executions>
+					<execution>
+						<id>Validate property files</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>python</executable>
+							<arguments>
+								<argument>${basedir}/filevalidation/validatefiles.py</argument>
+								<!-- existence of external directory means run validation, otherwise don't run -->
+								<argument>${basedir}/filevalidation/dir_existance_check</argument>
+								<argument>${basedir}/filevalidation/not_properties_file.txt</argument>
+								<argument>${basedir}/filevalidation/sam99ple.xml</argument>
+								<argument>${basedir}/filevalidation/no_duplicates.properties</argument>
+								<argument>${basedir}/filevalidation/has_duplicates.properties</argument>
+								<argument>${basedir}/filevalidation/has_duplicates2.properties</argument>
+							</arguments>
+						</configuration>
+					</execution>
 					<execution>
 						<id>Merge Properties</id>
 						<phase>install</phase>
@@ -18,7 +39,29 @@
 							<goal>exec</goal>
 						</goals>
 						<configuration>
-							<executable>${basedir}/mergeprops/mergeprops.py</executable>
+							<executable>python</executable>
+							<arguments>
+								<argument>${basedir}/mergeprops/mergeprops.py</argument>
+								<argument>${basedir}/mergeprops/environment.properties</argument>
+								<argument>${basedir}/mergeprops/template.properties</argument>
+								<argument>${basedir}/mergeprops/result.properties</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>Merge XML</id>
+						<phase>install</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>python</executable>
+							<arguments>
+								<argument>${basedir}/mergexml/stringreplace.py</argument>
+								<argument>${basedir}/mergeprops/environment.properties</argument>
+								<argument>${basedir}/mergexml/template.xml</argument>
+								<argument>${basedir}/mergexml/result.xml</argument>
+							</arguments>
 						</configuration>
 					</execution>
 				</executions>

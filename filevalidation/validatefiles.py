@@ -1,10 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # encoding: utf-8
 import sys
 import os
 
 if (len(sys.argv) < 3):
-    sys.stderr.write("Usage: validatefiles.py  <dir_existance_check>  <xml_or_properties_files>")
+    sys.stderr.write("Usage: python3 validatefiles.py  <dir_existance_check>  <xml_or_properties_files>")
     sys.exit(2)
     
 # read property keys (stripped) and make sure they are unique

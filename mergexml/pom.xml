@@ -13,22 +13,18 @@
 				<version>1.6.0</version>
 				<executions>
 					<execution>
-						<id>Validate property files</id>
-						<phase>validate</phase>
+						<id>Merge XML</id>
+						<phase>install</phase>
 						<goals>
 							<goal>exec</goal>
 						</goals>
 						<configuration>
 							<executable>python</executable>
 							<arguments>
-								<argument>${basedir}/validatefiles.py</argument>
-								<!-- existence of external directory means run validation, otherwise don't run -->
-								<argument>${basedir}/dir_existance_check</argument>
-								<argument>${basedir}/not_properties_file.txt</argument>
-								<argument>${basedir}/sam99ple.xml</argument>
-								<argument>${basedir}/no_duplicates.properties</argument>
-								<argument>${basedir}/has_duplicates.properties</argument>
-								<argument>${basedir}/has_duplicates2.properties</argument>
+								<argument>${basedir}/stringreplace.py</argument>
+								<argument>${basedir}/../mergeprops/environment.properties</argument>
+								<argument>${basedir}/template.xml</argument>
+								<argument>${basedir}/result.xml</argument>
 							</arguments>
 						</configuration>
 					</execution>

@@ -4,6 +4,6 @@
 	<address>
 		<street1>{person.street1}</street1>
 		<street2>{person.street2}</street2>
-		<country>CANADA</country>
+		<country>{country}</country>
 	</address>
 </xml>
